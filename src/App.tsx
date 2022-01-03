@@ -1,7 +1,41 @@
-import React from "react";
+import React from 'react';
+import { atom, selector, useRecoilValue } from 'recoil';
+import axios from 'axios';
+
+const todoIdState = atom({
+  key: 'todoIdState',
+  default: 1,
+});
+
+// const todoItemState = selector({
+//   key: 'todoItemState',
+//   get: async( { get } => {
+//     const id = get(todoIdState)
+//     const response = await axios.get(`https://jsonplaceholder.typicode.com/todos/${id}`)
+//     return response.data
+//   })
+// });
+
+const todoItemQuery = selector({
+  key: 'todoItemState',
+  get: async ({ get }) => {
+    const id = get(todoIdState);
+    const response = await axios.get(
+      `https://jsonplaceholder.typicode.com/todos/${id}`
+    );
+    return response.data;
+  },
+});
 
 function App() {
-  return <div>hello world</div>;
+  const data = useRecoilValue(todoItemQuery);
+
+  return (
+    <div>
+      {data.title}
+      {data.userId}
+    </div>
+  );
 }
 
 export default App;
